@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+</head>
+<body>
+  
+  <input id="in"></input> <button id="clear" onclick="document.querySelector('#log').innerHTML = ''; document.querySelector('#in').value='';">clear</button>
+  
+  <br>
+  <div id="log" style="overflow: scroll; height: 500px; width: 100%; background: rgba(0,0,0,1); color: white; font-family:monospace;"></div>
+
+<script>
+  
+var $input = document.querySelector('#in');
+var $log = document.querySelector('#log');
+
+
+function log(){
+  var args = [].slice.call(arguments)
+  //console.log.apply(console,args);
+  var $newline = document.createElement('span');
+  $newline.innerText = args
+    .map(function(item) {
+      if(typeof item === 'object') return JSON.stringify(item)
+      return item
+    })
+    .join(' ');
+  $log.appendChild($newline)
+  $log.appendChild(document.createElement('br'))
+  $log.scrollTop = 1<<29;
+}
+
+['keydown','keyup', 'keypress',
+ 'input', 'textInput',
+ 'compositionstart','compositionend','compositionupdate'
+].forEach(function(evName) {
+  $input.addEventListener(evName, function(ev) {
+    var data = _pick(ev, ['keycode','char','charCode','key','keyCode','which','data','locale']);
+    data.value = $input.value;
+    console.log(evName,ev)
+    log(evName, data);
+    
+    
+  })
+})
+
+
+function _pick(obj, keys) {
+    var newObj = {};
+    for (var i = 0, len = keys.length; i < len; i++) {
+        if (keys[i] in obj) {
+            newObj[keys[i]] = obj[keys[i]];
+        }
+    }
+    return newObj;
+};
+  </script>
+</body>
+</html>
